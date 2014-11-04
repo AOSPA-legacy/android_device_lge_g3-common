@@ -40,6 +40,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.qc.sdk.izat.premium_enabled=0 \
     ro.qc.sdk.izat.service_mask=0x0
 
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    rild.libpath=/vendor/lib/libril-qc-qmi-1.so \
+    rild.libargs=-d /dev/smd0
+
 # NITZ
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.rild.nitz_plmn="" \
