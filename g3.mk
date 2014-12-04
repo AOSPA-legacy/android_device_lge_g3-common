@@ -92,11 +92,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     camera.msm8974
 
-# Chargemode
-PRODUCT_PACKAGES += \
-    charger \
-    charger_res_images
-
 # Display
 PRODUCT_PACKAGES += \
     copybit.msm8974 \
