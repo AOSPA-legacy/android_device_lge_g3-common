@@ -40,7 +40,7 @@ TARGET_NO_BOOTLOADER := true
 # Kernel
 BOARD_CUSTOM_BOOTIMG := true
 BOARD_CUSTOM_BOOTIMG_MK := $(LOCAL_PATH)/mkbootimg.mk
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=g3 user_debug=31 msm_rtb.filter=0x0 androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=g3 user_debug=31 msm_rtb.filter=0x0
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
@@ -125,6 +125,40 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Radio
 BOARD_RIL_CLASS := ../../../device/lge/g3-common/ril/
+
+# SELinux
+include device/qcom/sepolicy/sepolicy.mk
+BOARD_SEPOLICY_DIRS += device/lge/g3-common/sepolicy
+
+BOARD_SEPOLICY_UNION += \
+    device.te \
+    file.te \
+    file_contexts \
+    init_shell.te \
+    genfs_contexts \
+    hostapd.te \
+    kcal_dev.te \
+    kernel.te \
+    lge_touch_sysfs.te \
+    mm-pp-daemon.te \
+    mm-qcamerad.te \
+    mpdecision.te \
+    nfc.te \
+    platform_app.te \
+    property.te \
+    property_contexts \
+    rmt_storage.te \
+    sensors.te \
+    servicemanager.te \
+    sysinit.te \
+    system_app.te \
+    tee.te \
+    thermal-engine.te \
+    time_data_file.te \
+    ueventd.te \
+    vold.te \
+    wcnss_service.te \
+    wpa.te
 
 # Time services
 BOARD_USES_QC_TIME_SERVICES := true
