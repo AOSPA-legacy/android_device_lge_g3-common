@@ -150,6 +150,7 @@ BOARD_SEPOLICY_UNION += \
     platform_app.te \
     property.te \
     property_contexts \
+    radio.te \
     rmt_storage.te \
     sensors.te \
     servicemanager.te \
