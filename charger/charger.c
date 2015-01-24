@@ -594,7 +594,7 @@ static int handle_uevent_fd(struct charger *charger, int fd)
     return 0;
 }
 
-static int uevent_callback(int fd, short revents, void *data)
+static int uevent_callback(int fd, uint32_t revents, void *data)
 {
     struct charger *charger = data;
 
@@ -678,22 +678,8 @@ static int draw_text(const char *str, int x, int y)
     return y + char_height;
 }
 
-static void draw_capacity(struct charger *charger)
-{
-    char cap_str[64];
-    int x, y;
-    int str_len_px;
-
-    snprintf(cap_str, sizeof(cap_str), "%d%%", charger->batt_anim->capacity);
-    str_len_px = gr_measure(cap_str);
-    x = (gr_fb_width() - str_len_px) / 2;
-    y = (gr_fb_height() + char_height) / 2;
-    gr_color(0xff, 0xff, 0xff, 255);
-    gr_text(x, y, cap_str, 0);
-}
-
 /* returns the last y-offset of where the surface ends */
-static int draw_surface_centered(struct charger *charger, gr_surface surface)
+static int draw_surface_centered(gr_surface surface)
 {
     int w;
     int h;
@@ -714,7 +700,7 @@ static void draw_unknown(struct charger *charger)
 {
     int y;
     if (charger->surf_unknown) {
-        draw_surface_centered(charger, charger->surf_unknown);
+        draw_surface_centered(charger->surf_unknown);
     } else {
         gr_color(0xff, 0xff, 0xff, 255);
         y = draw_text("Charging!", -1, -1);
@@ -728,7 +714,7 @@ static void draw_battery(struct charger *charger)
     struct frame *frame = &batt_anim->frames[batt_anim->cur_frame];
 
     if (batt_anim->num_frames != 0) {
-        draw_surface_centered(charger, frame->surface);
+        draw_surface_centered(frame->surface);
         LOGV("drawing frame #%d name=%s min_cap=%d time=%d\n",
              batt_anim->cur_frame, frame->name, frame->min_capacity,
              frame->disp_time);
@@ -744,10 +730,8 @@ static void redraw_screen(struct charger *charger)
     /* try to display *something* */
     if (batt_anim->capacity < 0 || batt_anim->num_frames == 0)
         draw_unknown(charger);
-    else {
+    else
         draw_battery(charger);
-        draw_capacity(charger);
-    }
     gr_flip();
 }
 
@@ -1011,7 +995,7 @@ static void wait_next_event(struct charger *charger, int64_t now)
         ev_dispatch();
 }
 
-static int input_callback(int fd, short revents, void *data)
+static int input_callback(int fd, uint32_t revents, void *data)
 {
     struct charger *charger = data;
     struct input_event ev;
@@ -1085,7 +1069,7 @@ static int alarm_set_reboot_time(int fd, int type, time_t secs)
 
     ret = ioctl(fd, ANDROID_ALARM_SET(type), &ts);
     if (ret < 0)
-        LOGE("Unable to set reboot time to %d\n", secs);
+        LOGE("Unable to set reboot time to %ld\n", secs);
     return ret;
 }
 
@@ -1156,7 +1140,7 @@ static void alarm_reboot()
     android_reboot(ANDROID_RB_RESTART, 0, 0);
 }
 
-void *alarm_thread(void *p)
+void *alarm_thread()
 {
     int alm_fd, rtc_fd, ret;
     time_t g_alm_secs, g_rtc_secs, s_rb_secs;
@@ -1213,7 +1197,7 @@ void alarm_thread_create()
         LOGE("Create alarm thread failed\n");
 }
 
-int main(int argc, char **argv)
+int main()
 {
     int ret;
     struct charger *charger = &charger_state;
