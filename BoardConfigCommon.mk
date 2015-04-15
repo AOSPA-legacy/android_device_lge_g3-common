@@ -130,6 +130,7 @@ BOARD_SEPOLICY_UNION += \
     genfs_contexts \
     hostapd.te \
     init_shell.te \
+    kcal_dev.te \
     kernel.te \
     keystore.te \
     lge_touch_sysfs.te \
